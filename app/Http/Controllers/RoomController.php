@@ -28,7 +28,7 @@ class RoomController extends Controller
      */
     public function create()
     {
-        //
+        return view('rooms.create');
     }
 
     /**
@@ -39,7 +39,9 @@ class RoomController extends Controller
      */
     public function store(StoreRoomRequest $request)
     {
-        //
+        Room::create($request->validated());
+
+        return redirect()->route('rooms.index');
     }
 
     /**
