@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -34,7 +36,9 @@ class UserController extends Controller
     {
         $this->validatePermissions();
 
-        return view('users.create');
+        $roles = Role::all();
+
+        return view('users.create', compact('roles'));
     }
 
     /**
@@ -45,7 +49,11 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        User::create($request->validated());
+        User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password'])
+        ])->assignRole($request['role']);
 
         return redirect()->route('users.index');
     }
@@ -100,6 +108,15 @@ class UserController extends Controller
     {
         $this->validatePermissions();
 
+        if ($user->id === Auth::user()->id) {
+            abort(403, "You can't delete yourself");
+        }
+
+        if (count(User::role('ADMIN')->get()) === 1) {
+            abort(403, "You can't delete the last admin");
+        }
+
+        $user->deleteProfilePhoto();
         $user->delete();
 
         return redirect()->route('users.index');
