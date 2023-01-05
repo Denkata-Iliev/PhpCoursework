@@ -18,6 +18,9 @@
                             <table class="min-w-full divide-y divide-gray-200 w-full">
                                 <thead>
                                 <tr>
+                                    <th scope="col" class="px-6 py-3 bg-gray-50">
+
+                                    </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Name
@@ -38,6 +41,10 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($users as $user)
                                     <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <img src="{{ $user->profile_photo_url }}" class="w-10 h-10 rounded-full" alt="{{ $user->name }}">
+                                        </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $user->name }}
                                         </td>
