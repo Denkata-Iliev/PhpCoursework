@@ -29,12 +29,15 @@
                 <x-jet-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="password_confirmation" />
             </div>
 
-            @foreach($roles as $role)
-                <div class="flex items-center mb-1">
-                    <input checked id="role" type="radio" value="{{ $role->name }}" name="role" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="role" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $role->name }}</label>
-                </div>
-            @endforeach
+            <div class="mt-4">
+                <x-jet-label>Role</x-jet-label>
+                @foreach($roles as $role)
+                    <div class="flex items-center mb-1">
+                        <x-jet-input checked id="role" type="radio" value="{{ $role->name }}" name="role" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        <x-jet-label for="role" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ $role->name }}</x-jet-label>
+                    </div>
+                @endforeach
+            </div>
 
             <x-jet-button class="ml-4 mt-4">
                 {{ __('Create') }}
