@@ -44,7 +44,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Requests\StoreUserRequest  $request
+     * @param \Illuminate\Http\Requests\StoreUserRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreUserRequest $request)
@@ -61,7 +61,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -74,26 +74,49 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
     {
         $this->validatePermissions();
 
-        return view('users.edit', compact('user'));
+        $roles = Role::all();
+
+        return view('users.edit', compact('user', 'roles'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Requests\UpdateUserRequest  $request
-     * @param  User  $user
+     * @param \Illuminate\Http\Requests\UpdateUserRequest $request
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->validated());
+        if (!is_null($request['name'])) {
+            $user->name = $request['name'];
+        }
+
+        if (!is_null($request['email'])) {
+            if ($request['email'] !== $user->email && User::where('email', $request['email'])->first()->id !== $user->id) {
+                return back()->with('error', 'This email is already taken');
+            }
+
+            $user->email = $request['email'];
+        }
+
+        if (!is_null($request['password'])) {
+            $user->password = bcrypt($request['password']);
+        }
+
+        if ($this->isLastAdmin() && $request['role'] === 'USER') {
+            abort(403, "You can't change the role of the last admin");
+        }
+
+        $user->syncRoles($request['role']);
+        $user->update();
 
         return redirect()->route('users.index');
     }
@@ -101,7 +124,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
@@ -112,7 +135,7 @@ class UserController extends Controller
             abort(403, "You can't delete yourself");
         }
 
-        if (count(User::role('ADMIN')->get()) === 1) {
+        if ($this->isLastAdmin()) {
             abort(403, "You can't delete the last admin");
         }
 
@@ -125,5 +148,13 @@ class UserController extends Controller
     private function validatePermissions(): void
     {
         abort_if(Gate::denies('access-users'), 403, self::NO_PERMISSIONS);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLastAdmin(): bool
+    {
+        return count(User::role('ADMIN')->get()) === 1;
     }
 }
