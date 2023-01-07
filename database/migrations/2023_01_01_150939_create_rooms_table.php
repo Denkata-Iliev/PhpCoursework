@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('current_subject')->nullable();
             $table->foreignId('user_id')
                 ->nullable()
-                ->constrained()
+                ->constrained('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->boolean('is_free')->default('1');
