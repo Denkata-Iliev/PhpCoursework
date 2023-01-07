@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // create permissions
         Permission::create(['name' => 'access-users']);
         Permission::create(['name' => 'access-rooms']);
+        Permission::create(['name' => 'access-rooms-crud']);
 
         // create ADMIN role and give it all permissions
         $admin = Role::create(['name' => 'ADMIN']);
