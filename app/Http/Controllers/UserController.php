@@ -111,7 +111,7 @@ class UserController extends Controller
             $user->password = bcrypt($request['password']);
         }
 
-        if ($this->isLastAdmin() && $request['role'] === 'USER') {
+        if ($user->hasRole('ADMIN') && $this->isLastAdmin()) {
             abort(403, "You can't change the role of the last admin");
         }
 
@@ -135,7 +135,7 @@ class UserController extends Controller
             abort(403, "You can't delete yourself");
         }
 
-        if ($this->isLastAdmin()) {
+        if ($user->hasRole('ADMIN') && $this->isLastAdmin()) {
             abort(403, "You can't delete the last admin");
         }
 
