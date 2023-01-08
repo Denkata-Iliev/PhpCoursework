@@ -23,6 +23,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->boolean('is_free')->default('1');
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
