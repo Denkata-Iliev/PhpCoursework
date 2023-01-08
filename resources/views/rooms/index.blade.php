@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -41,9 +42,7 @@
                                             Person Inside
                                         </th>
 
-                                        <th scope="col" class="px-6 py-3 bg-gray-50">
-
-                                        </th>
+                                        <th scope="col" class="px-6 py-3 bg-gray-50"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -71,27 +70,50 @@
                                             </td>
                                         @endif
 
-                                        @if($room->user != null)
+                                        @if(!is_null($room->user))
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 {{ $room->user->name }}
                                             </td>
                                         @else
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
                                         @endif
 
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('rooms.show', $room->id) }}"
                                                class="text-blue-600 hover:text-blue-900 mb-2 mr-2">View</a>
 
+                                            @if($room->is_free)
+                                                <a href="{{ route('rooms.take', $room->id) }}"
+                                                   class="text-green-600 hover:text-green-900 mb-2 mr-2">Take</a>
+
+                                            @elseif($room->user_id === Auth::user()->id
+                                                || Auth::user()->can('access-rooms-crud'))
+                                                <form class="inline-block"
+                                                      action="{{ route('rooms.dismiss', $room->id) }}"
+                                                      method="POST" onsubmit="return confirm('Are you sure?');">
+
+                                                    <input type="hidden" name="_method" value="PATCH">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                                                    <input type="submit"
+                                                           class="text-green-600 hover:text-green-900 mb-2 mr-2 cursor-pointer"
+                                                           value="Dismiss">
+                                                </form>
+                                            @endif
+
                                             @can('access-rooms-crud')
                                                 <a href="{{ route('rooms.edit', $room->id) }}"
                                                    class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">Edit</a>
-                                                <form class="inline-block" action="{{ route('rooms.destroy', $room->id) }}"
+
+                                                <form class="inline-block"
+                                                      action="{{ route('rooms.destroy', $room->id) }}"
                                                       method="POST" onsubmit="return confirm('Are you sure?');">
+
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <input type="submit" class="text-red-600 hover:text-red-900 mb-2 mr-2"
+
+                                                    <input type="submit"
+                                                           class="text-red-600 hover:text-red-900 mb-2 mr-2"
                                                            value="Delete">
                                                 </form>
                                             @endcan
