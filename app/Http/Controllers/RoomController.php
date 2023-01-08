@@ -6,9 +6,12 @@ use App\Models\Room;
 use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class RoomController extends Controller
 {
+    const NO_PERMISSION = "You don't have the necessary permission";
+
     /**
      * Display a listing of the resource.
      *
@@ -28,6 +31,8 @@ class RoomController extends Controller
      */
     public function create()
     {
+        $this->validatePermissions();
+
         return view('rooms.create');
     }
 
@@ -63,7 +68,7 @@ class RoomController extends Controller
      */
     public function edit(Room $room)
     {
-        //
+        $this->validatePermissions();
     }
 
     /**
@@ -86,6 +91,11 @@ class RoomController extends Controller
      */
     public function destroy(Room $room)
     {
-        //
+        $this->validatePermissions();
+    }
+
+    private function validatePermissions()
+    {
+        abort_if(Gate::denies('access-rooms-crud'), 403, self::NO_PERMISSION);
     }
 }
