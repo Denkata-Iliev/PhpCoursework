@@ -33,7 +33,7 @@ class RoomController extends Controller
      */
     public function create()
     {
-        $this->validatePermissions();
+        $this->validateAdminPermission();
 
         return view('rooms.create');
     }
@@ -70,7 +70,7 @@ class RoomController extends Controller
      */
     public function edit(Room $room)
     {
-        $this->validatePermissions();
+        $this->validateAdminPermission();
     }
 
     /**
@@ -160,10 +160,10 @@ class RoomController extends Controller
      */
     public function destroy(Room $room)
     {
-        $this->validatePermissions();
+        $this->validateAdminPermission();
     }
 
-    private function validatePermissions()
+    private function validateAdminPermission()
     {
         abort_if(Gate::denies('access-rooms-crud'), 403, self::NO_PERMISSION);
     }
