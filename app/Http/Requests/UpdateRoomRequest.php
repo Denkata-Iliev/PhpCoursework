@@ -25,7 +25,8 @@ class UpdateRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'room_number' => 'required|min:3|max:3|unique:rooms'
+            'room_number' => 'nullable|min:3|max:5',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }
