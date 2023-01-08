@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TakeRoomRequest;
 use App\Models\Room;
 use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class RoomController extends Controller
@@ -81,6 +83,73 @@ class RoomController extends Controller
     public function update(UpdateRoomRequest $request, Room $room)
     {
         //
+    }
+
+    /**
+     * Show the form for taking the specified room.
+     *
+     * @param  \App\Models\Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function take(Room $room)
+    {
+        abort_if(Gate::denies('access-rooms'), 403, self::NO_PERMISSION);
+
+        if (!$room->is_free) {
+            abort(403, "You can't take a room that's already been taken");
+        }
+
+        $user = Auth::user();
+        if (count(Room::where('user_id', $user->id)->get()) >= 1) {
+            abort(403, "You can't take more than one room at a time");
+        }
+
+        return view('rooms.take', compact('room'));
+    }
+
+    /**
+     * Take the specified room.
+     *
+     * @param  \App\Http\Requests\TakeRoomRequest  $request
+     * @param  \App\Models\Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function takeRoom(TakeRoomRequest $request, Room $room)
+    {
+        $user = Auth::user();
+
+        $room->update([
+            'current_subject' => $request['current_subject'],
+            'user_id' => $user->id,
+            'is_free' => '0'
+        ]);
+
+        return redirect()->route('rooms.index');
+    }
+
+    /**
+     * Dismiss the specified room.
+     *
+     * @param  \App\Models\Room  $room
+     * @return \Illuminate\Http\Response
+     */
+    public function dismiss(Room $room)
+    {
+        abort_if(Gate::denies('access-rooms'), 403, self::NO_PERMISSION);
+
+        $user = Auth::user();
+
+        if ($room->user_id !== $user->id && !$user->can('access-rooms-crud')) {
+            abort(403, self::NO_PERMISSION);
+        }
+
+        $room->update([
+           'current_subject' => null,
+           'user_id' => null,
+           'is_free' => '1'
+        ]);
+
+        return redirect()->route('rooms.index');
     }
 
     /**
