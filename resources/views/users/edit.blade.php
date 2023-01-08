@@ -44,12 +44,12 @@
                 @endforeach
             </div>
 
-            <x-jet-button class="ml-4 mt-4">
+            <x-jet-button class="ml-4 mt-4 bg-blue-800 hover:bg-blue-700">
                 {{ __('Update') }}
             </x-jet-button>
 
             <x-jet-button class="ml-4 mt-4">
-                <a href="{{ route('users.index') }}">Cancel</a>
+                <a href="{{ route('users.index') }}" class="block w-full">Back To List</a>
             </x-jet-button>
         </form>
     </x-jet-authentication-card>
