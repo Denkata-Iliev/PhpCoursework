@@ -16,6 +16,9 @@ class Room extends Model
 
     protected $fillable = [
         'room_number',
-        'current_subject'
+        'current_subject',
+        'user_id',
+        'is_free',
+        'photo_path',
     ];
 }
