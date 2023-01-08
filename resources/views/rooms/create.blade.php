@@ -8,7 +8,7 @@
     <x-jet-authentication-card>
         <x-slot name="logo"></x-slot>
 
-        <form method="POST" action="{{ route('rooms.store') }}">
+        <form method="POST" action="{{ route('rooms.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div>
@@ -19,12 +19,14 @@
                 <p class="text-sm text-red-600">{{ $message }}</p>
             @enderror
 
+            <x-jet-input type="file" name="photo" class="mt-4"/>
+
             <x-jet-button class="mr-4 mt-4">
                 {{ __('Create Room') }}
             </x-jet-button>
 
             <x-jet-button class="mt-4">
-                <a href="{{ route('rooms.index') }}">{{ __('Cancel') }}</a>
+                <a href="{{ route('rooms.index') }}">{{ __('Back To List') }}</a>
             </x-jet-button>
         </form>
     </x-jet-authentication-card>

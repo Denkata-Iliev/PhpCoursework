@@ -25,7 +25,8 @@ class StoreRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'room_number' => 'required|min:3|max:3|unique:rooms'
+            'room_number' => 'required|min:3|max:5|unique:rooms',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }
