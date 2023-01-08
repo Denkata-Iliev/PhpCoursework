@@ -25,7 +25,7 @@ class UpdateRoomRequest extends FormRequest
     public function rules()
     {
         return [
-            'current_subject' => 'required|min:3|max:100'
+            'room_number' => 'required|min:3|max:3|unique:rooms'
         ];
     }
 }
