@@ -100,7 +100,8 @@ class UserController extends Controller
         }
 
         if (!is_null($request['email'])) {
-            if ($request['email'] !== $user->email && User::where('email', $request['email'])->first()->id !== $user->id) {
+            $dbUser = User::where('email', $request['email'])->first();
+            if (!is_null($dbUser) && $dbUser->id !== $user->id) {
                 return back()->with('error', 'This email is already taken');
             }
 

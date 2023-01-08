@@ -113,7 +113,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                                                     <input type="submit"
-                                                           class="text-red-600 hover:text-red-900 mb-2 mr-2"
+                                                           class="text-red-600 hover:text-red-900 mb-2 mr-2 cursor-pointer"
                                                            value="Delete">
                                                 </form>
                                             @endcan
