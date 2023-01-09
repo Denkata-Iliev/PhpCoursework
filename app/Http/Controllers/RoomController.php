@@ -6,9 +6,7 @@ use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\TakeRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use App\Models\Room;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 
 class RoomController extends Controller
@@ -47,14 +45,12 @@ class RoomController extends Controller
      */
     public function store(StoreRoomRequest $request)
     {
-        $imageName = $this->getImageName($request);
-
         $room = new Room([
             'room_number' => $request['room_number']
         ]);
 
-        if (!is_null($imageName)) {
-            $room->photo_path = url("images/$imageName");
+        if (!is_null($request['photo'])) {
+            $room->updatePhoto($request['photo']);
         }
 
         $room->save();
@@ -97,12 +93,6 @@ class RoomController extends Controller
      */
     public function update(UpdateRoomRequest $request, Room $room)
     {
-        $imageName = $this->getImageName($request);
-
-        if (!is_null($imageName)) {
-            $room->photo_path = url("images/$imageName");
-        }
-
         if (!is_null($request['room_number'])) {
             $dbRoom = Room::where('room_number', $request['room_number'])->first();
             if (!is_null($dbRoom) && $dbRoom->id !== $room->id) {
@@ -110,6 +100,10 @@ class RoomController extends Controller
             }
 
             $room->room_number = $request['room_number'];
+        }
+
+        if (!is_null($request['photo'])) {
+            $room->updatePhoto($request['photo']);
         }
 
         $room->update();
@@ -194,11 +188,7 @@ class RoomController extends Controller
     {
         $this->validatePermission('access-rooms-crud');
 
-        $roomImagePath = public_path('images\\' . $room->room_number . substr($room->photo_path, -4));
-        if (File::exists($roomImagePath)) {
-            File::delete($roomImagePath);
-        }
-
+        $room->deletePhoto();
         $room->delete();
 
         return redirect()->route('rooms.index');
@@ -207,16 +197,5 @@ class RoomController extends Controller
     private function validatePermission($permissionName)
     {
         abort_if(Gate::denies($permissionName), 403, self::NO_PERMISSION);
-    }
-
-    private function getImageName(FormRequest $request): ?string
-    {
-        $imageName = null;
-        if (!is_null($request['photo'])) {
-            $imageName = $request['room_number'] . '.' . $request['photo']->extension();
-            $request['photo']->move(public_path('images'), $imageName);
-        }
-
-        return $imageName;
     }
 }

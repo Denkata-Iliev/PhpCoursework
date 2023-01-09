@@ -8,7 +8,7 @@
 
     <div class="flex mr-4">
         <div class="mt-4 w-1/3 justify-self-center self-center">
-            <img src="{{ $room->photo_path }}" alt="{{ $room->room_number }}" class="w-auto h-3/4 m-0 m-auto rounded-full"/>
+            <img src="{{ $room->photo_url }}" alt="{{ $room->room_number }}" class="w-auto h-3/4 m-0 m-auto rounded-full"/>
         </div>
 
         <div class="grid grid-rows-3 gap-4 w-2/3">
