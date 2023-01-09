@@ -21,4 +21,8 @@ class Room extends Model
         'is_free',
         'photo_path',
     ];
+
+    protected $appends = [
+        'photo_url',
+    ];
 }
