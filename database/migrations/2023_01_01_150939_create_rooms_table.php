@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->boolean('is_free')->default('1');
-            $table->string('photo_path')->default('https://cdn1.epicgames.com/ue/product/Screenshot/HighresScreenshot000001920-1920x1080-01dc0f45d35815bde586d413fee09cb7.jpg?resize=1&w=1920');
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
