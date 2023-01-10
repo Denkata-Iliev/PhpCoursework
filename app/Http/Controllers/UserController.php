@@ -100,7 +100,8 @@ class UserController extends Controller
         }
 
         if (!is_null($request['email'])) {
-            if ($request['email'] !== $user->email && User::where('email', $request['email'])->first()->id !== $user->id) {
+            $dbUser = User::where('email', $request['email'])->first();
+            if (!is_null($dbUser) && $dbUser->id !== $user->id) {
                 return back()->with('error', 'This email is already taken');
             }
 
@@ -111,7 +112,7 @@ class UserController extends Controller
             $user->password = bcrypt($request['password']);
         }
 
-        if ($this->isLastAdmin() && $request['role'] === 'USER') {
+        if ($user->hasRole('ADMIN') && $this->isLastAdmin()) {
             abort(403, "You can't change the role of the last admin");
         }
 
@@ -135,7 +136,7 @@ class UserController extends Controller
             abort(403, "You can't delete yourself");
         }
 
-        if ($this->isLastAdmin()) {
+        if ($user->hasRole('ADMIN') && $this->isLastAdmin()) {
             abort(403, "You can't delete the last admin");
         }
 

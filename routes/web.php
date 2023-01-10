@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-});
 
-Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class);
+
+    Route::resource('rooms', RoomController::class);
+    Route::get('rooms/{room}/take', [RoomController::class, 'take'])->name('rooms.take');
+    Route::patch('rooms/{room}/take', [RoomController::class, 'takeRoom'])->name('rooms.takeRoom');
+    Route::patch('rooms/{room}/dismiss', [RoomController::class, 'dismiss'])->name('rooms.dismiss');
+});
