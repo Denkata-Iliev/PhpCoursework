@@ -1,66 +1,57 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Php coursework - система за управление на стаите в университетски корпус
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Описание на заданието
+Проектът пази информация за стаите в даден корпус на университет.
 
-## About Laravel
+## Room (Стая)
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | int,<br> primary key | първичен ключ |
+| room_number | string,<br> unique | номер на стаята (уникален) |
+| current_subject | string,<br> nullable | предметът, който се преподава в момента (ако има такъв) |
+| is_free | boolean | флаг, посочващ дали стаята е свободна |
+| user_id | int,<br> foreign key,<br> nullable | id-то на човека, който в момента е в стаята (ако има такъв) |
+| photo_path | string,<br> nullable | път към снимката на стаята (ако има такава) |
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## User (потребител) - standard from Jetstream
+Полетата, които са използвани в проекта:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | int,<br> primary key | първичен ключ |
+| name | string | име на потребителя |
+| email | string,<br> unique | имейл на потребителя (уникален) |
+| profile_photo_path | string,<br> nullable | път към профилната снимка на потребителя (ако има такава) |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Roles and Permissions - Роли и Права
+| Роля | Права | Описание |
+|------|-------|----------|
+| USER | access-rooms | Има правото да разглежда всички стаи, да взема и да освобождава стая. |
+| ADMIN | access-rooms,<br> access-rooms-crud,<br> access-users | Има достъп до всичко в системата - създаване, редактиране, изтриване на стаи и потребители, както и създаване на нови админи. |
 
-## Learning Laravel
+## Room Views (Изгледи на стая) 
+| View | Роля | Описание |
+|------|------|----------|
+| index | ADMIN,<br> USER | Показва всички стаи, подредени по номер, дали са свободни, предметът, който се преподава в тях и човекът, който го преподава (ако има такива). Също има бутон за детайлен преглед на стаята и бутон за вземане на стаята (ако е свободна) или за освобождаване на стаята (ако логнатия потребител е този, който я е взел). |
+| show | ADMIN,<br> USER | Подробен изглед на стаята с бутони за връщане към списъка със стаи, бутон за вземане или освобождаване на стаята |
+| take | ADMIN,<br> USER | Препраща към форма, в която трябва да се попълни предмета, който ще се преподава в стаята, която потребителят иска да вземе. |
+| edit | ADMIN | Препраща към форма за редактиране на стая. Редактира се само номера на стаята и снимката ѝ. |
+| create | ADMIN | Препраща към форма за създаване на стая - попълва се номер на стая и снимка за нея (не е задължителна). | 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Room Controller (Контролер за стаите)
+| Метод | Описание |
+|--------|----------|
+| index,<br> create,<br> show,<br> edit,<br> take  | Проверяват дали потребителя има нужните права за достъпване на съответния изглед и препраща към него, ако да. Ако не - препраща към Forbidden страница със съответното съобщение. |
+| store | Създава нова стая, като проверява дали има качена снимка за нея - ако да, записва снимката и прави url към нея. Ако не - дава url по подразбиране. |
+| update | Обновява дадена стая, като проверява дали съответния номер вече съществува и ако да - проверява дали е на същата стая, ако да - позволява обновяването. Ако не - изписва съответното съобщение за грешка. Прави същата проверка за снимка, като в store. |
+| takeRoom | Дава съответната стая на потребител, като записва съответния предмет, който потребителя е въвел и отбелязва стаята като заета. |
+| dismiss | Отбелязва стаята като свободна и изчиства потребителя и предмета от нея. |
+| destroy | Изтрива стаята от системата и снимката ѝ, ако такава съществува. |
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## User Controller (Контролер за потребителите) - достъп имат само админите
+| Метод | Описание |
+|-------|----------|
+| index,<br> create,<br> show,<br> edit | Проверяват дали потребителя има нужните права за достъпване на съответния изглед и препраща към него, ако да. Ако не - препраща към Forbidden страница със съответното съобщение. |
+| store | Създава нов потребител или админ. |
+| update | Обновява съответния потребител, като проверява дали имейла, който е въведен съществува, ако да - проверява дали е на този потребител, ако да - позволява обновяването. Ако не - изписва съобщение за грешката. Също проверява дали това е последния админ, ако да и ролята е променена - дава грешка, че не може да се промени ролята на последния админ в системата. |
+| destroy | Проверява дали това е последния админ в системата - ако да, дава грешка, че последния админ не може да бъде изтрит. Ако не - изтрива потребителя и профилната му снимка (ако има такава). |
