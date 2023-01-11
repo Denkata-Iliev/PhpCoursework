@@ -25,7 +25,8 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $rooms = \App\Models\Room::latest()->take(3)->get();
+        return view('dashboard', compact('rooms'));
     })->name('dashboard');
 
     Route::resource('users', UserController::class);
