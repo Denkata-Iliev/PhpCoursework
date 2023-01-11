@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AdminSeeder extends Seeder
 {
@@ -14,6 +15,10 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+        if (DB::table('users')->count() !== 0) {
+            return;
+        }
+
         User::create([
             'name' => 'DefaultAdmin',
             'email' => 'admin@admin.com',
