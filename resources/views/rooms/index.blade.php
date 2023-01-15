@@ -15,11 +15,11 @@
                 </div>
             @endcan
 
-            <form class="mb-2" method="POST" action="{{ route('rooms.search') }}">
+            <form class="mb-2" method="POST" action="{{ route('rooms.search') }}" autocomplete="off">
                 @csrf
-                <input type="text" placeholder="{{ __('Search') }}" name="roomNumber" class="block rounded p-1"/>
+                <input type="text" placeholder="{{ __('Room Number') }}" name="roomNumber" class="block rounded p-1"/>
                 <div>
-                    <input type="checkbox" placeholder="{{ __('Search') }}" name="isFree" id="isFree" class="rounded p-1"/>
+                    <input type="checkbox" name="isFree" id="isFree" class="rounded p-1"/>
                     <label for="isFree">Free</label>
                 </div>
                 <x-jet-secondary-button type="submit">{{ __('Search') }}</x-jet-secondary-button>

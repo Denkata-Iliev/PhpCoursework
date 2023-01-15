@@ -8,7 +8,7 @@
     <x-jet-authentication-card>
         <x-slot name="logo"></x-slot>
 
-        <form method="POST" action="{{ route('rooms.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('rooms.store') }}" enctype="multipart/form-data" autocomplete="off">
             @csrf
 
             <div>

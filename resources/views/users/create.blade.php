@@ -6,7 +6,7 @@
 
         <x-jet-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data" autocomplete="off">
             @csrf
 
             <div>

@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('rooms.update', $room->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('rooms.update', $room->id) }}" enctype="multipart/form-data" autocomplete="off">
             @csrf
             @method('patch')
 

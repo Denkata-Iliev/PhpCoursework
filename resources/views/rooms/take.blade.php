@@ -8,7 +8,7 @@
     <x-jet-authentication-card>
         <x-slot name="logo"></x-slot>
 
-        <form method="POST" action="{{ route('rooms.takeRoom', $room->id) }}">
+        <form method="POST" action="{{ route('rooms.takeRoom', $room->id) }}" autocomplete="off">
             @csrf
             @method('patch')
 

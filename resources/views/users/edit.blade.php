@@ -11,7 +11,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('users.update', $user->id) }}">
+        <form method="POST" action="{{ route('users.update', $user->id) }}" autocomplete="off">
             @csrf
             @method('patch')
 
