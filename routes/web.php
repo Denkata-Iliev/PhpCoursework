@@ -30,6 +30,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('users', UserController::class);
+    Route::post('users/search', [UserController::class, 'search'])->name('users.search');
 
     Route::resource('rooms', RoomController::class);
     Route::get('rooms/{room}/take', [RoomController::class, 'take'])->name('rooms.take');

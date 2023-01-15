@@ -7,10 +7,18 @@
 
     <div>
         <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="block mb-8">
+            <div class="block mb-4">
                 <a href="{{ route('users.create') }}"
                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Create User</a>
             </div>
+
+            <form class="mb-2" method="POST" action="{{ route('users.search') }}">
+                @csrf
+                <input type="text" placeholder="{{ __('Name') }}" name="name" class="block rounded p-1 mb-1"/>
+                <input type="text" placeholder="{{ __('Email') }}" name="email" class="block rounded p-1"/>
+                <x-jet-secondary-button type="submit" class="mt-1">{{ __('Search') }}</x-jet-secondary-button>
+            </form>
+
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

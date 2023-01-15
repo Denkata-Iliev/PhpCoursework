@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
@@ -23,6 +24,19 @@ class UserController extends Controller
         $this->validatePermissions();
 
         $users = User::all();
+
+        return view('users.index', compact('users'));
+    }
+
+    public function search(Request $request)
+    {
+        $name = is_null($request['name']) ? '' : $request['name'];
+        $email = is_null($request['email']) ? '' : $request['email'];
+
+        $users = User::query()
+            ->where('name', 'like', "%$name%")
+            ->where('email', 'like', "%$email%")
+            ->get();
 
         return view('users.index', compact('users'));
     }

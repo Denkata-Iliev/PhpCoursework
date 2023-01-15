@@ -32,8 +32,8 @@ class RoomController extends Controller
         $isFree = is_null($request['isFree']) ? '' : '1';
 
         $rooms = Room::query()
-            ->where('room_number', 'like', '%' . $roomNumber . '%')
-            ->where('is_free', 'like', '%' . $isFree . '%')
+            ->where('room_number', 'like', "%$roomNumber%")
+            ->where('is_free', 'like', "%$isFree%")
             ->orderBy('room_number')
             ->get();
 
