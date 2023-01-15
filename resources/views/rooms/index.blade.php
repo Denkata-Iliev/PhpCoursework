@@ -9,11 +9,21 @@
     <div>
         <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
             @can('access-rooms-crud')
-                <div class="block mb-8">
+                <div class="block mb-4">
                     <a href="{{ route('rooms.create') }}"
                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add Room</a>
                 </div>
             @endcan
+
+            <form class="mb-2" method="POST" action="{{ route('rooms.search') }}">
+                @csrf
+                <input type="text" placeholder="{{ __('Search') }}" name="roomNumber" class="block rounded p-1"/>
+                <div>
+                    <input type="checkbox" placeholder="{{ __('Search') }}" name="isFree" id="isFree" class="rounded p-1"/>
+                    <label for="isFree">Free</label>
+                </div>
+                <x-jet-secondary-button type="submit">{{ __('Search') }}</x-jet-secondary-button>
+            </form>
 
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

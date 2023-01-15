@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\TakeRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use App\Models\Room;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,6 +26,20 @@ class RoomController extends Controller
         return view('rooms.index', compact('rooms'));
     }
 
+    public function search(Request $request)
+    {
+        $roomNumber = is_null($request['roomNumber']) ? '' : $request['roomNumber'];
+        $isFree = is_null($request['isFree']) ? '' : '1';
+
+        $rooms = Room::query()
+            ->where('room_number', 'like', '%' . $roomNumber . '%')
+            ->where('is_free', 'like', '%' . $isFree . '%')
+            ->orderBy('room_number')
+            ->get();
+
+        return view('rooms.index', compact('rooms'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -40,7 +55,7 @@ class RoomController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreRoomRequest  $request
+     * @param \App\Http\Requests\StoreRoomRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreRoomRequest $request)
@@ -61,7 +76,7 @@ class RoomController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Room  $room
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function show(Room $room)
@@ -74,7 +89,7 @@ class RoomController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Room  $room
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function edit(Room $room)
@@ -87,8 +102,8 @@ class RoomController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateRoomRequest  $request
-     * @param  \App\Models\Room  $room
+     * @param \App\Http\Requests\UpdateRoomRequest $request
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateRoomRequest $request, Room $room)
@@ -96,7 +111,7 @@ class RoomController extends Controller
         if (!is_null($request['room_number'])) {
             $dbRoom = Room::where('room_number', $request['room_number'])->first();
             if (!is_null($dbRoom) && $dbRoom->id !== $room->id) {
-                return back()-with('error', 'This room number is already taken');
+                return back() - with('error', 'This room number is already taken');
             }
 
             $room->room_number = $request['room_number'];
@@ -114,7 +129,7 @@ class RoomController extends Controller
     /**
      * Show the form for taking the specified room.
      *
-     * @param  \App\Models\Room  $room
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function take(Room $room)
@@ -136,8 +151,8 @@ class RoomController extends Controller
     /**
      * Take the specified room.
      *
-     * @param  \App\Http\Requests\TakeRoomRequest  $request
-     * @param  \App\Models\Room  $room
+     * @param \App\Http\Requests\TakeRoomRequest $request
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function takeRoom(TakeRoomRequest $request, Room $room)
@@ -156,7 +171,7 @@ class RoomController extends Controller
     /**
      * Dismiss the specified room.
      *
-     * @param  \App\Models\Room  $room
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function dismiss(Room $room)
@@ -170,9 +185,9 @@ class RoomController extends Controller
         }
 
         $room->update([
-           'current_subject' => null,
-           'user_id' => null,
-           'is_free' => '1'
+            'current_subject' => null,
+            'user_id' => null,
+            'is_free' => '1'
         ]);
 
         return redirect()->route('rooms.index');
@@ -181,7 +196,7 @@ class RoomController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Room  $room
+     * @param \App\Models\Room $room
      * @return \Illuminate\Http\Response
      */
     public function destroy(Room $room)

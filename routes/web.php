@@ -35,4 +35,5 @@ Route::middleware([
     Route::get('rooms/{room}/take', [RoomController::class, 'take'])->name('rooms.take');
     Route::patch('rooms/{room}/take', [RoomController::class, 'takeRoom'])->name('rooms.takeRoom');
     Route::patch('rooms/{room}/dismiss', [RoomController::class, 'dismiss'])->name('rooms.dismiss');
+    Route::post('rooms/search', [RoomController::class, 'search'])->name('rooms.search');
 });
